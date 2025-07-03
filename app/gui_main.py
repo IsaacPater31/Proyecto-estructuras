@@ -156,7 +156,23 @@ class MainApp(tk.Tk):
 
     def ir_flujo(self):
         alg = self.algoritmos_flujo.get()
-        messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
+        if alg != "Ford-Fulkerson":
+            messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
+            return
+        if self.G is None:
+            messagebox.showwarning("Archivo no cargado", "Por favor, carga un archivo CSV primero.")
+            return
+        
+        # Verificar que el grafo tenga información de flujo
+        has_flow = any('flujo' in data for _, _, data in self.G.edges(data=True))
+        if not has_flow:
+            messagebox.showwarning("Datos de flujo no encontrados", 
+                                 "El archivo CSV debe contener una columna 'flujo (und)' para usar algoritmos de flujo máximo.")
+            return
+        
+        self.destroy()
+        import app.gui_FordF as ff
+        ff.GrafoFordFulkersonApp(self.G, self.nodos).mainloop()
 
 if __name__ == "__main__":
     app = MainApp()

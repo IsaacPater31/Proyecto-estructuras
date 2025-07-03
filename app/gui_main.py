@@ -111,7 +111,16 @@ class MainApp(tk.Tk):
             self.canvas.draw()
             return
         self.ax.clear()
-        pos = nx.kamada_kawai_layout(self.G, scale=3)
+        # USAR coordenadas reales si están (campo 'pos' en cada nodo)
+        try:
+            pos = {n: (self.G.nodes[n]['pos'][1], self.G.nodes[n]['pos'][0]) for n in self.G.nodes if self.G.nodes[n]['pos'] != (0,0)}
+            # Agrega los nodos sin coordenadas, si hay
+            for n in self.G.nodes:
+                if self.G.nodes[n]['pos'] == (0,0):
+                    pos[n] = (0,0)
+        except Exception as e:
+            print("Error en posiciones de nodos:", e)
+            pos = nx.spring_layout(self.G)
         nx.draw_networkx_nodes(self.G, pos, ax=self.ax, node_color='skyblue', node_size=650)
         nx.draw_networkx_labels(self.G, pos, ax=self.ax, font_size=10, font_family="DejaVu Sans")
         nx.draw_networkx_edges(self.G, pos, ax=self.ax, width=2, edge_color='grey')
@@ -130,7 +139,7 @@ class MainApp(tk.Tk):
     def cargar_archivo(self):
         file_path = filedialog.askopenfilename(
             title="Selecciona el archivo CSV de rutas",
-            filetypes=[("CSV files", "*.csv")]
+            filetypes=[("CSV files", "*.csv"), ("Todos los archivos", "*.*")]
         )
         if file_path:
             try:
@@ -151,7 +160,6 @@ class MainApp(tk.Tk):
             return
         self.destroy()
         import app.gui_dijkstra as djk
-        # ---- ¡AQUÍ! ----
         djk.GrafoDijkstraApp(self.G, self.nodos).mainloop()
 
     def ir_flujo(self):

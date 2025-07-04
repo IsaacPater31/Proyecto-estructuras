@@ -152,15 +152,20 @@ class MainApp(tk.Tk):
 
     def ir_corto(self):
         alg = self.algoritmos_corto.get()
-        if alg != "Dijkstra":
-            messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
-            return
         if self.G is None:
             messagebox.showwarning("Archivo no cargado", "Por favor, carga un archivo CSV primero.")
             return
-        self.destroy()
-        import app.gui_dijkstra as djk
-        djk.GrafoDijkstraApp(self.G, self.nodos).mainloop()
+        if alg == "Dijkstra":
+            self.destroy()
+            import app.gui_dijkstra as djk
+            djk.GrafoDijkstraApp(self.G, self.nodos).mainloop()
+        elif alg == "Bellman-Ford":
+            self.destroy()
+            import app.gui_bellman as blm
+            blm.GrafoBellmanApp(self.G, self.nodos).mainloop()
+        else:
+            messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
+
 
     def ir_flujo(self):
         alg = self.algoritmos_flujo.get()

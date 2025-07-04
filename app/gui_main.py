@@ -154,6 +154,9 @@ class MainApp(tk.Tk):
             messagebox.showwarning("Archivo no cargado", "Por favor, carga un archivo CSV primero.")
             return
 
+
+
+
         if alg == "Dijkstra":
             self.destroy()
             import app.gui_dijkstra as djk
@@ -162,12 +165,17 @@ class MainApp(tk.Tk):
             self.destroy()
             import app.gui_bellman as blm
             blm.GrafoBellmanApp(self.G, self.nodos).mainloop()
+
         elif alg == "A* (A-Star)":
             self.destroy()
             import app.gui_astar as ast
             ast.GrafoAStarApp(self.G, self.nodos).mainloop()
         else:
             messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
+        else:
+            messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
+
+
 
     def ir_flujo(self):
         alg = self.algoritmos_flujo.get()

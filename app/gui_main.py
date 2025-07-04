@@ -15,7 +15,7 @@ class MainApp(tk.Tk):
         self.geometry(f"{ancho}x{alto}")
         self.minsize(900, 450)
         self.center_window(ancho, alto)
-        self.G = None  # No grafo al inicio
+        self.G = None
         self.nodos = []
         self._crear_layout()
         self._make_responsive()
@@ -34,17 +34,15 @@ class MainApp(tk.Tk):
         self.container.grid_columnconfigure(0, weight=0)
         self.container.grid_columnconfigure(1, weight=1)
 
-        # --- Lado izquierdo ---
+        # Lado izquierdo
         self.left = tk.Frame(self.container)
         self.left.grid(row=0, column=0, sticky="nsew", padx=30, pady=30)
 
-        # Botón para cargar archivo
         ttk.Button(self.left, text="Cargar archivo CSV", command=self.cargar_archivo).pack(anchor="w", pady=(0, 18))
 
-        # Título principal
         ttk.Label(self.left, text="¿Qué deseas hacer?", font=("Arial", 15, "bold")).pack(anchor="w", pady=(0, 18))
 
-        # ---- Camino más corto ----
+        # Camino más corto
         ttk.Label(self.left, text="Camino más corto", font=("Arial", 12, "bold")).pack(anchor="w", pady=(0, 7))
         frame_corto = tk.Frame(self.left)
         frame_corto.pack(anchor="w", pady=(0, 18))
@@ -64,7 +62,7 @@ class MainApp(tk.Tk):
         self.algoritmos_corto.grid(row=0, column=1, padx=(0,12))
         ttk.Button(frame_corto, text="Continuar", command=self.ir_corto).grid(row=0, column=2)
 
-        # ---- Flujo máximo ----
+        # Flujo máximo
         ttk.Label(self.left, text="Flujo máximo", font=("Arial", 12, "bold")).pack(anchor="w", pady=(8, 7))
         frame_flujo = tk.Frame(self.left)
         frame_flujo.pack(anchor="w", pady=(0, 18))
@@ -83,7 +81,7 @@ class MainApp(tk.Tk):
         self.algoritmos_flujo.grid(row=0, column=1, padx=(0,12))
         ttk.Button(frame_flujo, text="Continuar", command=self.ir_flujo).grid(row=0, column=2)
 
-        # --- Lado derecho ---
+        # Lado derecho
         self.right = tk.Frame(self.container)
         self.right.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
         self.right.grid_rowconfigure(0, weight=1)
@@ -166,6 +164,10 @@ class MainApp(tk.Tk):
             self.destroy()
             import app.gui_astar as ast
             ast.GrafoAStarApp(self.G, self.nodos).mainloop()
+        elif alg == "Floyd-Warshall":
+            self.destroy()
+            import app.gui_floyd as flw
+            flw.GrafoFloydApp(self.G, self.nodos).mainloop()
         else:
             messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
 
@@ -175,5 +177,5 @@ class MainApp(tk.Tk):
 
 if __name__ == "__main__":
     app = MainApp()
-    app.visualizar_grafo_completo()  # Muestra mensaje inicial "Carga un archivo CSV..."
+    app.visualizar_grafo_completo()
     app.mainloop()

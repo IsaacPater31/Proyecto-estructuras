@@ -3,6 +3,7 @@ import networkx as nx
 from algorithms.caminocorto.dijkstra import shortest_path_dijkstra, shortest_paths_from_source_dijkstra
 from algorithms.caminocorto.bellman_ford import shortest_paths_from_source_bellman
 from algorithms.caminocorto.astar import shortest_path_astar
+from algorithms.caminocorto.floyd_warshall import shortest_paths_floyd_warshall
 
 # Diccionario de coordenadas (completo, revisa si te falta algún municipio)
 COORDS = {
@@ -94,3 +95,6 @@ def calcular_todos_caminos_bellman(G, origen):
 
 def calcular_camino_astar(G, origen, destino):
     return shortest_path_astar(G, origen, destino)
+
+def calcular_todos_caminos_floyd(G):
+    return shortest_paths_floyd_warshall(G)

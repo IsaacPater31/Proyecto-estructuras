@@ -174,10 +174,6 @@ class MainApp(tk.Tk):
             flw.GrafoFloydApp(self.G, self.nodos).mainloop()
         else:
             messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
-        else:
-            messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
-
-
 
     def ir_flujo(self):
         alg = self.algoritmos_flujo.get()

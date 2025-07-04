@@ -91,6 +91,7 @@ def calcular_todos_caminos_dijkstra(G, origen):
     return shortest_paths_from_source_dijkstra(G, origen)
 
 def calcular_todos_caminos_bellman(G, origen):
+
     return shortest_paths_from_source_bellman(G, origen)
 
 def calcular_camino_astar(G, origen, destino):

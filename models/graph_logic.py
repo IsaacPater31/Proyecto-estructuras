@@ -4,6 +4,7 @@ from algorithms.caminocorto.dijkstra import shortest_path_dijkstra, shortest_pat
 from algorithms.caminocorto.bellman_ford import shortest_paths_from_source_bellman
 from algorithms.caminocorto.astar import shortest_path_astar
 from algorithms.caminocorto.floyd_warshall import shortest_paths_floyd_warshall
+from algorithms.caminocorto.johnson import shortest_paths_johnson
 
 COORDS = {
     "Cartagena": (10.4236, -75.5253),
@@ -191,3 +192,6 @@ def calcular_camino_astar(G, origen, destino):
 
 def calcular_todos_caminos_floyd(G):
     return shortest_paths_floyd_warshall(G)
+
+def calcular_todos_caminos_johnson(G):
+    return shortest_paths_johnson(G)

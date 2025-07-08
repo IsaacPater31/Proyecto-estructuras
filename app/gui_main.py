@@ -171,6 +171,10 @@ class MainApp(tk.Tk):
             self.destroy()
             import app.gui_caminocorto.gui_floyd as flw
             flw.GrafoFloydApp(self.G, self.nodos).mainloop()
+        elif alg == "Johnson":
+            self.destroy()
+            import app.gui_caminocorto.gui_johnson as jhn
+            jhn.GrafoJohnsonApp(self.G, self.nodos).mainloop()
         else:
             messagebox.showinfo("En desarrollo", f"La funcionalidad '{alg}' estará disponible próximamente.")
 

@@ -200,6 +200,10 @@ class MainApp(tk.Tk):
             self.withdraw()
             import app.gui_flujomaximo.gui_Dinic as din
             din.GrafoDinicApp(self.G, self.nodos).mainloop()
+        elif alg == "Push-Relabel":
+            self.withdraw()
+            import app.gui_flujomaximo.gui_PushRelabel as pr
+            pr.GrafoPushRelabelApp(self.G, self.nodos).mainloop()
         else:
             messagebox.showinfo("En desarrollo", f"Algoritmo {alg} no implementado aún")
 

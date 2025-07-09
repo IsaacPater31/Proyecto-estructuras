@@ -12,6 +12,7 @@ class GrafoFordFulkersonApp(tk.Toplevel):
     def __init__(self, parent, G, nodos):
         super().__init__(parent)
         self.title("Algoritmo Ford-Fulkerson - Flujo Máximo")
+
         ancho, alto = 1400, 750
         self.geometry(f"{ancho}x{alto}")
         self.minsize(900, 450)
@@ -21,6 +22,7 @@ class GrafoFordFulkersonApp(tk.Toplevel):
         self.parent = parent
         self.resultado = None
         
+
         self._crear_layout()
         self._dibujar_grafo_inicial()
 
@@ -152,6 +154,7 @@ class GrafoFordFulkersonApp(tk.Toplevel):
         self.result_text.config(state=tk.NORMAL)
         self.result_text.delete(1.0, tk.END)
 
+
         if self.resultado is not None and isinstance(self.resultado, dict):
             max_flow = self.resultado.get('max_flow', None)
             flow_paths = self.resultado.get('flow_paths', None)
@@ -175,8 +178,7 @@ class GrafoFordFulkersonApp(tk.Toplevel):
             else:
                 self.result_text.insert(tk.END, "No hay caminos de aumento disponibles.\n")
         else:
-            self.result_text.insert(tk.END, "No hay resultados disponibles.\n")
-        
+            self.result_text.insert(tk.END, "No hay resultados disponibles.\n")        
         self.result_text.insert(tk.END, "\nUTILIZACIÓN DE ARISTAS:\n")
         for (u, v), data in self.resultado['edge_flows'].items():
             if data['flow'] > 0:
@@ -187,6 +189,7 @@ class GrafoFordFulkersonApp(tk.Toplevel):
 
     def _visualizar_flujo(self, fuente, sumidero):
         self.ax.clear()
+
         try:
             pos = {
                 n: (self.G.nodes[n]['pos'][1], self.G.nodes[n]['pos'][0])

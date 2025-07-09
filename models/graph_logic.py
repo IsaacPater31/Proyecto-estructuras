@@ -124,8 +124,8 @@ def cargar_grafo_flujo(csv_path):
     df.columns = df.columns.str.strip()
     G = nx.DiGraph()
     for _, row in df.iterrows():
-        origen = str(row['origen']).strip().title()
-        destino = str(row['destino']).strip().title()
+        origen = normaliza(row['origen'])
+        destino = normaliza(row['destino'])
         distancia = float(row['distancia(km)'])
         eta = float(row['ETA(min)'])
         flujo = float(row['flujo (und)']) if 'flujo (und)' in df.columns else 150
@@ -148,25 +148,35 @@ def cargar_grafo_flujo(csv_path):
 
 def redireccionar_grafo_favor_flujo(G, fuente, sumidero):
     """
-    Crea un grafo dirigido solo con las aristas que participan en algún camino
-    de fuente a sumidero, en la dirección en que aparecen en esos caminos.
+    Redirige todas las aristas del grafo para que apunten en la dirección que acerca al sumidero.
+    El grafo resultante es dirigido y garantiza que exista al menos un camino de fuente a sumidero,
+    siempre que el grafo original sea conexo.
     """
     DG = nx.DiGraph()
-    # Buscar todos los caminos simples de fuente a sumidero
+    # Calcula la distancia mínima de cada nodo al sumidero
     try:
-        caminos = nx.all_simple_paths(G, fuente, sumidero)
-        for camino in caminos:
-            for i in range(len(camino) - 1):
-                u, v = camino[i], camino[i+1]
-                if G.has_edge(u, v):
-                    DG.add_edge(u, v, **G[u][v])
-                elif G.has_edge(v, u):
-                    DG.add_edge(v, u, **G[v][u])
-        # Copiar atributos de nodos
-        for n in DG.nodes:
-            DG.nodes[n].update(G.nodes[n])
+        distancias = nx.shortest_path_length(G, target=sumidero)
     except nx.NetworkXNoPath:
-        pass
+        # Si no hay caminos, retorna solo los nodos
+        DG.add_nodes_from(G.nodes(data=True))
+        return DG
+
+    for u, v, data in G.edges(data=True):
+        du = distancias.get(u, float('inf'))
+        dv = distancias.get(v, float('inf'))
+        # Redirige la arista hacia el nodo más cercano al sumidero
+        if du > dv:
+            DG.add_edge(u, v, **data)
+        elif dv > du:
+            DG.add_edge(v, u, **data)
+        else:
+            # Si ambos están a la misma distancia, agrega ambas direcciones
+            DG.add_edge(u, v, **data)
+            DG.add_edge(v, u, **data)
+    # Copia atributos de nodos
+    for n in DG.nodes:
+        if n in G.nodes:
+            DG.nodes[n].update(G.nodes[n])
     return DG
 
 

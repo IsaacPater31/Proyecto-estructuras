@@ -46,6 +46,8 @@ class FordFulkerson:
         for u, v, data in self.G.edges(data=True):
 
             self.residual_graph.add_edge(u, v, capacity=data['capacity'])
+            if not self.residual_graph.has_edge(v, u):
+                self.residual_graph.add_edge(v, u, capacity=0)
 
 
 

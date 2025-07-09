@@ -27,13 +27,13 @@ COORDS = {
     "San Jacinto": (10.0916, -75.1212),
     "El Carmen De Bolivar": (9.7214, -75.1241),
     "Zambrano": (9.7478, -74.8413),
-    "Córdoba": (9.8361, -74.8434),
-    "Magangué": (9.2420, -74.7547),
+    "Cordoba": (9.8361, -74.8434),
+    "Magangue": (9.2420, -74.7547),
     "Cicuco": (9.2517, -74.5022),
     "Pinillos": (8.9118, -74.4634),
     "Altos Del Rosario": (8.7947, -74.1665),
     "Barranco De Loba": (8.9450, -74.1066),
-    "San Martín De Loba": (8.8131, -74.0262),
+    "San Martin De Loba": (8.8131, -74.0262),
     "Hatillo De Loba": (8.8891, -74.1311),
     "Margarita": (8.8570, -74.2524),
     "San Fernando": (9.0920, -74.5316),
@@ -41,12 +41,12 @@ COORDS = {
     "Talaigua Nuevo": (9.3024, -74.4838),
     "Montecristo": (8.2975, -74.4805),
     "Tiquisio": (8.5627, -74.2712),
-    "Norosí": (8.5065, -74.1230),
+    "Norosi": (8.5065, -74.1230),
     "Arenal": (8.4622, -73.9442),
-    "Río Viejo": (8.5891, -73.9486),
+    "Rio Viejo": (8.5891, -73.9486),
     "Regidor": (8.6641, -73.8211),
-    "El Peñon": (8.9900, -73.9295),
-    "Simití": (7.9552, -73.9608),
+    "El Penon": (8.9900, -73.9295),
+    "Simiti": (7.9552, -73.9608),
     "Morales": (8.2767, -73.8694),
     "San Pablo": (7.4951, -73.7825),
     "Santa Rosa Del Sur": (7.9645, -74.0545),
@@ -66,8 +66,8 @@ def cargar_grafo(csv_path):
     df = pd.read_csv(csv_path, sep=None, engine='python', encoding='latin1')
     G = nx.Graph()
     for _, row in df.iterrows():
-        origen = str(row['origen']).strip().title()
-        destino = str(row['destino']).strip().title()
+        origen = normaliza(row['origen'])
+        destino = normaliza(row['destino'])
         distancia = float(row['distancia(km)'])
         eta = float(row['ETA(min)'])
         if 'flujo (und)' in df.columns:

@@ -5,8 +5,10 @@ from models.graph_logic import cargar_grafo_flujo
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 import networkx as nx
+import pandas as pd
 
 class MainApp(tk.Tk):
     def __init__(self):
@@ -19,6 +21,7 @@ class MainApp(tk.Tk):
         self.G = None
         self.GD = None
         self.nodos = []
+        self.tiene_flujo = False  # Nueva variable para rastrear si tiene datos de flujo
         self._crear_layout()
         self._make_responsive()
 
@@ -41,6 +44,10 @@ class MainApp(tk.Tk):
         self.left.grid(row=0, column=0, sticky="nsew", padx=30, pady=30)
 
         ttk.Button(self.left, text="Cargar archivo CSV", command=self.cargar_archivo).pack(anchor="w", pady=(0, 18))
+
+        # Indicador de estado del archivo
+        self.estado_archivo = ttk.Label(self.left, text="No se ha cargado ningún archivo", font=("Arial", 10), foreground="gray")
+        self.estado_archivo.pack(anchor="w", pady=(0, 18))
 
         ttk.Label(self.left, text="¿Qué deseas hacer?", font=("Arial", 15, "bold")).pack(anchor="w", pady=(0, 18))
 
@@ -102,6 +109,8 @@ class MainApp(tk.Tk):
     def _make_responsive(self):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
+    
+
 
     def visualizar_grafo_completo(self):
         if self.G is None:
@@ -141,13 +150,54 @@ class MainApp(tk.Tk):
         )
         if file_path:
             try:
+                # Resetear estado anterior automáticamente
+                self.G = None
+                self.GD = None
+                self.nodos = []
+                self.tiene_flujo = False
+                self.estado_archivo.config(
+                    text="Cargando archivo...", 
+                    foreground="blue"
+                )
+                
+                # Primero verificar si el archivo tiene la columna de flujo
+                with open(file_path, encoding='latin1') as f:
+                    primer_linea = f.readline()
+                    sep = '\t' if '\t' in primer_linea else ';'
+                
+                df = pd.read_csv(file_path, sep=sep, encoding='latin1')
+                df.columns = df.columns.str.strip()
+                
+                # Verificar si tiene la columna de flujo
+                self.tiene_flujo = 'flujo (und)' in df.columns
+                
+                # Cargar los grafos
                 self.G = cargar_grafo(file_path)
                 self.GD = cargar_grafo_flujo(file_path)
                 self.nodos = sorted(list(self.G.nodes()))
                 self.visualizar_grafo_completo()
-                messagebox.showinfo("Éxito", "Archivo cargado correctamente.")
+                
+                # Actualizar indicador visual
+                if self.tiene_flujo:
+                    self.estado_archivo.config(
+                        text="✅ Archivo cargado con datos de flujo", 
+                        foreground="green"
+                    )
+                    messagebox.showinfo("Éxito", "Archivo cargado correctamente.\n\n✅ Este archivo contiene datos de flujo.\nPuedes usar algoritmos de flujo máximo.")
+                else:
+                    self.estado_archivo.config(
+                        text="⚠️ Archivo cargado sin datos de flujo", 
+                        foreground="orange"
+                    )
+                    messagebox.showinfo("Éxito", "Archivo cargado correctamente.\n\n⚠️ Este archivo NO contiene datos de flujo.\nSolo puedes usar algoritmos de camino corto.")
+                    
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo cargar el archivo.\n\n{e}")
+                self.tiene_flujo = False
+                self.estado_archivo.config(
+                    text="❌ Error al cargar archivo", 
+                    foreground="red"
+                )
 
     def ir_corto(self):
         alg = self.algoritmos_corto.get()
@@ -182,8 +232,18 @@ class MainApp(tk.Tk):
         alg = self.algoritmos_flujo.get()
 
         if self.GD is None:
-
             messagebox.showwarning("Error", "Debe cargar un grafo primero")
+            return
+        
+        # Validar que el archivo tenga datos de flujo
+        if not self.tiene_flujo:
+            messagebox.showwarning(
+                "Archivo sin datos de flujo", 
+                "El archivo cargado no contiene la columna 'flujo (und)'.\n\n"
+                "Para usar algoritmos de flujo máximo, necesitas cargar un archivo CSV "
+                "que incluya esta columna con los valores de capacidad de flujo.\n\n"
+                "Por favor, carga un archivo que contenga datos de flujo."
+            )
             return
         
         if alg == "Ford-Fulkerson":

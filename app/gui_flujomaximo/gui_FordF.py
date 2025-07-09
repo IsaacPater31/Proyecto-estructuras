@@ -88,8 +88,6 @@ class GrafoFordFulkersonApp(tk.Toplevel):
 
         from models.graph_logic import redireccionar_grafo_favor_flujo
         G_redirigido = redireccionar_grafo_favor_flujo(self.G, fuente, sumidero)
-        print("Nodos en G_redirigido:", G_redirigido.nodes)
-        print("Fuente:", fuente, "Sumidero:", sumidero)
         if not nx.has_path(G_redirigido, fuente, sumidero):
             self.resultado_label.config(text="No existe ningún camino entre los nodos seleccionados.")
             return

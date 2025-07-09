@@ -124,8 +124,8 @@ def cargar_grafo_flujo(csv_path):
     df.columns = df.columns.str.strip()
     G = nx.DiGraph()
     for _, row in df.iterrows():
-        origen = normaliza(row['origen'])
-        destino = normaliza(row['destino'])
+        origen = str(row['origen']).strip().title()
+        destino = str(row['destino']).strip().title()
         distancia = float(row['distancia(km)'])
         eta = float(row['ETA(min)'])
         flujo = float(row['flujo (und)']) if 'flujo (und)' in df.columns else 150
